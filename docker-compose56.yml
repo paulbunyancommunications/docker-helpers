@@ -1,0 +1,133 @@
+version: '3.1'
+
+volumes:
+  db:
+    {}
+
+networks:
+  frontend:
+    external: true
+  backend:
+    driver: bridge
+  testend:
+    driver: bridge
+
+
+services:
+  web:
+    restart: always
+    image: jenkins.paulbunyan.net:5000/httpd:latest
+    volumes:
+    - ${PWD}:/var/www/html
+    env_file:
+    - ./.env
+    expose:
+    - "80"
+    labels:
+    - "traefik.frontend.rule=Host:${SERVER_NAME}"
+    - "traefik.docker.network=frontend"
+    - "traefik.port=443"
+    - "traefik.protocol=https"
+    networks:
+    - frontend
+    - backend
+    - testend
+
+  code:
+    restart: always
+    env_file:
+    - ./.env
+    image: jenkins.paulbunyan.net:5000/php:7
+    environment:
+      ServerName: ${SERVER_NAME}
+      XDEBUG_CONFIG: ${XDEBUG_CONFIG}
+      DOCKER: "TRUE"
+      DOCKER_HOST: "web"
+      USER_ID: ${USER_ID}
+    volumes:
+      - ${PWD}:/var/www/html/:Z
+    expose:
+      - "9000"
+    networks:
+      - backend
+
+  db:
+    restart: always
+    image: mysql:5.5
+    env_file:
+    - ./.env
+    volumes:
+      - db:/var/lib/mysql/
+      - ${PWD}/database/dump/:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      explicit_defaults_for_timestamp: 1
+      max_connections: 400
+      TIMESTAMP: NOT NULL
+    ports:
+      - "3306"
+    networks:
+      - backend
+
+  hub:
+    image: selenium/hub:3.4
+    privileged: true
+    environment:
+      - GRID_TIMEOUT=120000
+      - GRID_BROWSER_TIMEOUT=120000
+    networks:
+      - testend
+      - backend
+    depends_on:
+      - code
+
+  chrome:
+    image: selenium/node-chrome:3.4
+    environment:
+      - no_proxy=localhost
+      - TZ=America/Chicago
+      - HUB_PORT_4444_TCP_ADDR=hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    volumes:
+      - /dev/shm:/dev/shm
+    expose:
+      - '4444'
+      - '5900'
+    depends_on:
+      - hub
+    links:
+      - hub
+    networks:
+      - testend
+
+  firefox:
+    image: selenium/node-firefox:3.4
+    shm_size: 2G
+    environment:
+      - no_proxy=localhost
+      - TZ=America/Chicago
+      - HUB_PORT_4444_TCP_ADDR=hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    volumes:
+      - /dev/shm:/dev/shm
+    expose:
+      - '4444'
+      - '5900'
+    depends_on:
+      - hub
+    links:
+      - hub
+    networks:
+      - testend
+
+  redis:
+    image: redis:3
+    restart: always
+    expose:
+      - '6379'
+    networks:
+      - backend
+    #TODO: redis conf file for security
