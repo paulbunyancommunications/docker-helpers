@@ -16,12 +16,12 @@
 ################################################################################
 
 # make .env if not already created
-latest=$(git ls-remote https://github.com/paulbunyannet/bash.git | grep HEAD | awk '{ print $1}');
-curl --silent https://raw.githubusercontent.com/paulbunyannet/bash/${latest}/docker/update_docker_assets_file.sh > update_docker_assets_file.sh;
-chmod +x update_docker_assets_file.sh;
-sh update_docker_assets_file.sh;
-rm update_docker_assets_file.sh;
-sh get_docker_assets.sh;
+latest=$(git ls-remote https://github.com/paulbunyancommunications/docker-helpers.git | grep HEAD | awk '{ print $1}');
+curl --silent https://raw.githubusercontent.com/paulbunyancommunications/docker-helpers/${latest}/update-docker-assets-file.sh > update-docker-assets-file.sh;
+chmod +x update-docker-assets_file.sh;
+sh update-docker-assets-file.sh;
+rm update-docker-assets-file.sh;
+sh get-docker-assets.sh;
 
 
 REMOVEDEPENDENCIES="not";
@@ -237,7 +237,7 @@ case $ARG1 in
           REDOIMAGES="false"
           ONECHECK="false"
           TWOCHECKS="true"
-#            sh get_docker_assets.sh
+#            sh get-docker-assets.sh
             printf "REDOIMAGES is true ${NL}"
             printf "REMOVEDEPENDENCIES is true ${NL}"
     ;;
@@ -246,7 +246,7 @@ case $ARG1 in
           REDOIMAGES="true"
           ONECHECK="false"
           TWOCHECKS="true"
-#            sh get_docker_assets.sh
+#            sh get-docker-assets.sh
             printf "REDOIMAGES is true ${NL}"
             printf "REMOVEDEPENDENCIES is true ${NL}"
     ;;
@@ -405,7 +405,7 @@ if [ "$REMOVEDEPENDENCIES" == "$NOT" ]; then
 
     printf "${CYAN} Would you like to install dependencies? ${NL}"
     printf "Intro y and press enter to accept, anything else to skip this option ${NL}"
-    
+
     read -e -p "${RED} ##### (y??)>>: " answer;
     printf "${NONE} ";
     case $answer in
@@ -422,14 +422,14 @@ fi
 if [ -f Gemfile ];
     then
         RUBYSTART=$(date +%s);
-    
+
         printf "${PURPLE} Installing Ruby Gem dependencies${NL}"
-        
+
         docker-compose exec -T code apt-get install ruby-full -y;
         docker-compose exec -T code gem install bundler;
         docker-compose exec -T code bundler install;
         printf "${PURPLE} Installing Ruby Gem dependencies complete!${NL}"
-    
+
         RUBYEND=$(date +%s);
 fi;
 
@@ -458,8 +458,8 @@ if [ "$REMOVEDEPENDENCIES" == "$TRUE" ]; then
 
     if [ "$doc_yarn" == "true" ]; then
         YARNSTART=$(date +%s);
-    
-    
+
+
         printf "yarn install ${NL}"
         if [ "$VERBOSE" == "false" ]; then
             docker-compose exec -T code yarn install --force --no-bin-links >/dev/null 2>&1;
@@ -467,12 +467,12 @@ if [ "$REMOVEDEPENDENCIES" == "$TRUE" ]; then
             docker-compose exec -T code yarn install --force --no-bin-links
         fi
         YARNEND=$(date +%s);
-    
+
     fi
     if [ "$doc_npm" == "true" ] && [ "$doc_yarn" != "true" ]; then
         NPMSTART=$(date +%s);
-    
-    
+
+
         printf "npm -g update${NL}"
         if [ "$VERBOSE" == "false" ]; then
             docker-compose exec -T code npm -g update --silent  >/dev/null 2>&1;
@@ -482,8 +482,8 @@ if [ "$REMOVEDEPENDENCIES" == "$TRUE" ]; then
         NPMEND=$(date +%s);
     fi
     if [ "$doc_artisan_key" == "true" ]; then
-    
-    
+
+
         printf "php artisan key:generate ${NL}"
         docker-compose exec -T code php artisan key:generate
     fi
@@ -637,4 +637,3 @@ sh stacks.sh
 printf "#################/-------------------------------------\################# ${NL}"
 printf "################|  Paul Bunyan Communications Rocks!!!  |################ ${NL}"
 printf "#################\-------------------------------------/################# ${NL}"
-
