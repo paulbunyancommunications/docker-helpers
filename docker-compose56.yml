@@ -140,7 +140,7 @@ services:
       - hub
       - db
     volumes:
-      - ${PWD}:/var/www/html
+      - ${PWD}:/project
     networks:
       - testend
       - backend
