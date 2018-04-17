@@ -143,6 +143,7 @@ services:
       - db
     volumes:
       - ${PWD}:/project
+      - ${PWD}:/var/www/html
     networks:
       - testend
       - backend
