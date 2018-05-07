@@ -47,8 +47,8 @@ OUTPUT=$(echo "$OUTPUT" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g 
 if [ -d $OUTPUT_PATH ]; then mkdir -p ${OUTPUT_PATH}; fi;
 
 # Install assets needed for Lighthouse to function. Run this inside the code container
-apt-get -qq update
-apt-get -qq install gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+apt-get -qq -y update
+apt-get -qq -y install gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
 # https://stackoverflow.com/a/47204160
 if [ ! -f google-chrome-stable_current_amd64.deb ]; then wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb; fi;
 dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
