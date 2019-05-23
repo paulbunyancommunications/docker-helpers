@@ -58,7 +58,7 @@ services:
   db:
     restart: always
     image: mysql:5.7
-    args: ["--sql_mode=\"\"", "--innodb_strict_mode=OFF"]
+    command: --sql_mode=\"\"
     env_file:
     - ./.env
     volumes:
