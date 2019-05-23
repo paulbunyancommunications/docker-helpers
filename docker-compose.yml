@@ -58,7 +58,6 @@ services:
   db:
     restart: always
     image: mysql:5.7
-    command: --sql_mode=\"\"
     env_file:
     - ./.env
     volumes:
