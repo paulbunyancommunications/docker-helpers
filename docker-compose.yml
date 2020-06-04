@@ -27,6 +27,7 @@ services:
     - "traefik.docker.network=frontend"
     - "traefik.port=443"
     - "traefik.protocol=https"
+    - "traefik.enable=true"
     networks:
     - frontend
     - backend
@@ -75,7 +76,7 @@ services:
       - backend
 
   hub:
-    image: selenium/hub:3.4
+    image: selenium/hub:3.141.59
     privileged: true
     environment:
       - GRID_TIMEOUT=300
@@ -87,7 +88,7 @@ services:
       - code
 
   chrome:
-    image: selenium/node-chrome:3.4
+    image: selenium/node-chrome:3.141.59
     environment:
       - no_proxy=localhost
       - TZ=America/Chicago
