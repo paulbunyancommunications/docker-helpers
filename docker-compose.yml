@@ -75,33 +75,22 @@ services:
     networks:
       - backend
 
-  hub:
-    image: selenium/hub:3.141.59
-    privileged: true
-    environment:
-      - GRID_TIMEOUT=300
-      - GRID_BROWSER_TIMEOUT=300
-    networks:
-      - testend
-      - backend
-    depends_on:
-      - code
-
   chrome:
-    image: selenium/node-chrome:3.141.59
+    image: seleniarm/standalone-chromium:110.0
+    shm_size: 4G
+    privileged: true
     environment:
       - no_proxy=localhost
       - TZ=America/Chicago
-      - HUB_PORT_4444_TCP_ADDR=hub
-      - HUB_PORT_4444_TCP_PORT=4444
     volumes:
       - /dev/shm:/dev/shm
     expose:
       - '4444'
       - '5900'
-    depends_on:
-      - hub
     links:
-      - hub
+      # https://docs.docker.com/compose/compose-file/#links
+      - web:web.test
     networks:
+      - backend
       - testend
+      - frontend
