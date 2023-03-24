@@ -88,7 +88,6 @@ services:
       - '4444'
       - '5900'
     links:
-      # https://docs.docker.com/compose/compose-file/#links
       - web:web.test
     networks:
       - backend
