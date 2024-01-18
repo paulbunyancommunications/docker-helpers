@@ -249,6 +249,13 @@ if [ -f "Gemfile" ]; then
         eval "docker-compose${DOCKER_VERBOSE}exec -T code bundler install"
 fi;
 
+    if [ -f "vite.config.mts" ] ||  [ -f "vite.config.js" ]; then
+        echo "------------------------------------------------------------------------------------"
+        echo "------------------------------------------------------------------------------------"
+        echo "Running Yarn vite build for production"
+        eval "docker-compose${DOCKER_VERBOSE}exec -T code yarn vite build"
+    fi;
+
 if [ -f "bower.json" ]; then
     if [ "$BOWEREXEC" == "true" ]; then
         echo "------------------------------------------------------------------------------------"
