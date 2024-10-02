@@ -55,7 +55,7 @@ services:
 
   db:
     restart: always
-    image: mysql:5.7
+    image: jenkins.paulbunyan.net:3443/proxy_cache/mysql:5.7
     command: mysqld --sql_mode=""
     env_file:
     - ./.env
@@ -76,7 +76,7 @@ services:
       - backend
 
   chrome:
-    image: seleniarm/standalone-chromium:110.0
+    image: jenkins.paulbunyan.net:3443/proxy_cache/seleniarm/standalone-chromium:110.0
     shm_size: 4G
     privileged: true
     environment:
