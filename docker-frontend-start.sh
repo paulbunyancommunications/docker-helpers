@@ -16,7 +16,7 @@ fi
 
 if  [ "$FRONTENDRUNNING" == "false" ]; then
 
-    docker run -d -p 8080:8080 -p 80:80 -p 443:443 --name=frontend  --restart=always -v /var/run/docker.sock:/var/run/docker.sock jenkins.paulbunyan.net:5000/traefik:latest
+    docker run -d -p 8080:8080 -p 80:80 -p 443:443 --name=frontend  --restart=always -v /var/run/docker.sock:/var/run/docker.sock harbor.pbndev.net:3443/library/traefik:latest
 
     docker network create frontend
 
